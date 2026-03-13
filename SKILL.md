@@ -29,9 +29,7 @@ This skill uses a `config.json` file:
 
 ```json
 {
-  "enable": false,    // User must explicitly enable
-  "mode": "simple",   // Display mode
-  "language": "auto"  // Language setting
+  "enable": false    // User must explicitly enable
 }
 ```
 
@@ -85,6 +83,8 @@ Analyze the response text for signs of good judgment:
 | 0 or negative | ❌ LOW |
 
 ## Output Format
+
+The fact check should be in the **same language** as the user's question. If user asks in Chinese, output in Chinese. If user asks in English, output in English.
 
 The fact check should be friendly and lively, not robotic. Use casual language.
 

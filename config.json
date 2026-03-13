@@ -1,5 +1,3 @@
 {
-  "enable": false,
-  "mode": "simple",
-  "language": "auto"
+  "enable": true
 }
