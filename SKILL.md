@@ -86,18 +86,35 @@ Analyze the response text for signs of good judgment:
 
 ## Output Format
 
+The fact check should be friendly and lively, not robotic. Use casual language.
+
+### Credibility Expressions
+
+| Score | Emoji | Expression |
+|-------|-------|------------|
+| 3+ | ✅ | Looks good! |
+| 1-2 | 🤔 | Eh, some doubts |
+| 0 or negative | 😅 | Uh... I'm not sure |
+
+### Example Output
+
 ```
 ---
-### 🔍 Fact Check
+🤔 Just checked it for you:
 
-**Tools Used**: None
-**Response Quality**: Correctly identified time contradiction
-**Score**: +2 (bonus)
+- Said "according to xx" but I can't find the source, minus points!
+- Didn't call any tools to verify, minus points!
 
-**Credibility**: ✅ HIGH
-
+😅 Summary: I'm not sure about this, recommend double-checking
 ---
 ```
+
+### Style Guidelines
+
+- Use casual, friendly tone
+- Add personality (e.g., "Just checked it for you", "Uh...")
+- Keep it short and fun
+- Don't use overly technical language
 
 ## Implementation Notes
 
