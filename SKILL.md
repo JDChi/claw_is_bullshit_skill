@@ -88,6 +88,17 @@ Only reads the daily log file to extract:
 - Tool call names (e.g., `web_fetch`, `exec`)
 - Response timestamps
 
+### What the Log Contains
+
+The OpenClaw log file contains **only system metadata**, NOT user message content:
+- ✅ Message IDs (e.g., `om_xxx`)
+- ✅ User IDs (e.g., `ou_xxx`)
+- ✅ Tool call records (tool name, params, duration)
+- ✅ System events (channel start, config changes)
+- ❌ **NO** user message text/正文
+- ❌ **NO** API keys or passwords
+- ❌ **NO** file contents
+
 ### What It Does NOT Do
 
 - ❌ Does not read user files
