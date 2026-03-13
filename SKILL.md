@@ -1,11 +1,21 @@
 ---
 name: is-bullshit
-description: Detect if AI responses contain hallucinations by checking tool usage logs AND response quality. Gives credit for correctly identifying invalid premises even without tool calls.
+description: Detect if AI responses contain hallucinations by analyzing tool usage and response quality. Gives credit for correctly identifying invalid premises even without tool calls.
 ---
 
 # is-bullshit - Hallucination Detector
 
-**IMPORTANT**: This skill **MUST automatically show** fact check after **EVERY response**, WITHOUT waiting for user to ask "check" or "检测".
+**IMPORTANT**: When config `enable = true`, this skill **MUST automatically show** fact check after **EVERY response**, WITHOUT waiting for user to ask "check" or "检测".
+
+When `enable = false`, this skill triggers when user explicitly asks:
+- **Chinese**: 检测、检测一下、核实、是真的吗、是不是胡说
+- **English**: 
+  - "is that true" / "is this true"
+  - "are you serious" / "you serious"
+  - "is that bullshit" / "is this nonsense"
+  - "verify" / "check" / "fact check"
+  - "are you sure" / "are you certain"
+  - "that's not right" / "that's wrong"
 
 ## Purpose
 
@@ -13,10 +23,32 @@ Detect whether the AI's response is trustworthy by checking:
 1. **Tool usage** - Did the AI call tools to verify facts?
 2. **Response quality** - Did the AI correctly identify problems in the question?
 
+## Configuration
+
+This skill uses a `config.json` file:
+
+```json
+{
+  "enable": false,    // User must explicitly enable
+  "mode": "simple",   // Display mode
+  "language": "auto"  // Language setting
+}
+```
+
+### How to Enable
+
+User can say:
+- "enable fact check" → enable = true
+- "disable fact check" → enable = false
+- "turn on is-bullshit" → enable = true
+- "turn off is-bullshit" → enable = false
+
+When enabled, fact check will automatically appear after every AI response.
+
 ## How It Works
 
 ### 1. Tool Usage Check
-Read the log file to see what tools were called.
+Check what tools were called during the response (from the conversation context).
 
 ### 2. Response Quality Check
 Analyze the response text for signs of good judgment:
@@ -67,66 +99,9 @@ Analyze the response text for signs of good judgment:
 ---
 ```
 
-## Security & Safety
-
-### File Access
-
-This skill only reads **one specific log file**:
-- **Path**: `/tmp/openclaw/openclaw-YYYY-MM-DD.log`
-- **Example**: `/tmp/openclaw/openclaw-2026-03-13.log`
-- **Format**: Daily rotating logs (one file per day)
-- **Does NOT read any other files**
-
-### Log File Format
-
-The log file is a **JSON Lines** format (one JSON object per line):
-
-```json
-{"subsystem":"gateway","message":"feishu: received message...","time":"2026-03-13T10:09:20.871Z"}
-{"subsystem":"plugin","message":"tool call: web_fetch params={...}","time":"2026-03-13T10:09:21.000Z"}
-{"subsystem":"plugin","message":"tool done: web_fetch ok (150ms)","time":"2026-03-13T10:09:21.150Z"}
-```
-
-### What the Log Contains
-
-The OpenClaw log file contains **only system metadata**, NOT user message content:
-
-| Content | Included? |
-|---------|-----------|
-| Message IDs (e.g., `om_xxx`) | ✅ Yes |
-| User IDs (e.g., `ou_xxx`) | ✅ Yes |
-| Tool call names (e.g., `web_fetch`) | ✅ Yes |
-| Tool call params (truncated) | ✅ Yes |
-| Response timestamps | ✅ Yes |
-| System events | ✅ Yes |
-| **User message text** | ❌ **NO** |
-| **API keys / secrets** | ❌ **NO** |
-| **File contents** | ❌ **NO** |
-
-**Proof**: See sample log entries above - only system-level metadata is logged.
-
-### Handling Missing Logs
-
-If the log file does not exist:
-- Return "Unable to verify - log file not found"
-- Do NOT throw errors
-- Do NOT attempt to read other files
-- Report: "Credibility: UNKNOWN"
-
-### Platform API
-
-Currently, OpenClaw does **not provide** a tool-call audit API or sanitized summary feed. Therefore, this skill must read the raw log file to function.
-
-### What It Does NOT Do
-
-- ❌ Does not read user files
-- ❌ Does not read configuration files
-- ❌ Does not access home directory
-- ❌ Does not make network requests
-- ❌ Does not modify any files
-
 ## Implementation Notes
 
-- Checks both tool logs AND response content
+- Checks both tool usage AND response content
 - Gives credit for good judgment even without tools
 - Penalizes confident fabrication
+- Default is OFF - user must explicitly enable
