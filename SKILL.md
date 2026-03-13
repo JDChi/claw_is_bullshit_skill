@@ -65,6 +65,37 @@ Analyze the response text for signs of good judgment:
 ---
 ```
 
+## Security & Safety
+
+### File Access
+
+This skill only reads **one specific log file**:
+- Path: `/tmp/openclaw/openclaw-YYYY-MM-DD.log`
+- Format: Daily rotating logs (e.g., `openclaw-2026-03-13.log`)
+- **Does NOT read any other files**
+
+### Why This Path is Safe
+
+- `/tmp/` files are temporary and deleted periodically
+- Log files contain only session metadata (tool calls, timestamps)
+- No sensitive data like API keys or passwords are stored here
+- Files are not persistent system files
+
+### What It Reads
+
+Only reads the daily log file to extract:
+- Message IDs
+- Tool call names (e.g., `web_fetch`, `exec`)
+- Response timestamps
+
+### What It Does NOT Do
+
+- ❌ Does not read user files
+- ❌ Does not read configuration files
+- ❌ Does not access home directory
+- ❌ Does not make network requests
+- ❌ Does not modify any files
+
 ## Implementation Notes
 
 - Checks both tool logs AND response content
