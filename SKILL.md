@@ -5,6 +5,8 @@ description: Detect if AI responses contain hallucinations by checking tool usag
 
 # is-bullshit - Hallucination Detector
 
+**IMPORTANT**: This skill **MUST automatically show** fact check after **EVERY response**, WITHOUT waiting for user to ask "check" or "检测".
+
 ## Purpose
 
 Detect whether the AI's response is trustworthy by checking:
