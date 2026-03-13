@@ -70,34 +70,50 @@ Analyze the response text for signs of good judgment:
 ### File Access
 
 This skill only reads **one specific log file**:
-- Path: `/tmp/openclaw/openclaw-YYYY-MM-DD.log`
-- Format: Daily rotating logs (e.g., `openclaw-2026-03-13.log`)
+- **Path**: `/tmp/openclaw/openclaw-YYYY-MM-DD.log`
+- **Example**: `/tmp/openclaw/openclaw-2026-03-13.log`
+- **Format**: Daily rotating logs (one file per day)
 - **Does NOT read any other files**
 
-### Why This Path is Safe
+### Log File Format
 
-- `/tmp/` files are temporary and deleted periodically
-- Log files contain only session metadata (tool calls, timestamps)
-- No sensitive data like API keys or passwords are stored here
-- Files are not persistent system files
+The log file is a **JSON Lines** format (one JSON object per line):
 
-### What It Reads
-
-Only reads the daily log file to extract:
-- Message IDs
-- Tool call names (e.g., `web_fetch`, `exec`)
-- Response timestamps
+```json
+{"subsystem":"gateway","message":"feishu: received message...","time":"2026-03-13T10:09:20.871Z"}
+{"subsystem":"plugin","message":"tool call: web_fetch params={...}","time":"2026-03-13T10:09:21.000Z"}
+{"subsystem":"plugin","message":"tool done: web_fetch ok (150ms)","time":"2026-03-13T10:09:21.150Z"}
+```
 
 ### What the Log Contains
 
 The OpenClaw log file contains **only system metadata**, NOT user message content:
-- ✅ Message IDs (e.g., `om_xxx`)
-- ✅ User IDs (e.g., `ou_xxx`)
-- ✅ Tool call records (tool name, params, duration)
-- ✅ System events (channel start, config changes)
-- ❌ **NO** user message text/正文
-- ❌ **NO** API keys or passwords
-- ❌ **NO** file contents
+
+| Content | Included? |
+|---------|-----------|
+| Message IDs (e.g., `om_xxx`) | ✅ Yes |
+| User IDs (e.g., `ou_xxx`) | ✅ Yes |
+| Tool call names (e.g., `web_fetch`) | ✅ Yes |
+| Tool call params (truncated) | ✅ Yes |
+| Response timestamps | ✅ Yes |
+| System events | ✅ Yes |
+| **User message text** | ❌ **NO** |
+| **API keys / secrets** | ❌ **NO** |
+| **File contents** | ❌ **NO** |
+
+**Proof**: See sample log entries above - only system-level metadata is logged.
+
+### Handling Missing Logs
+
+If the log file does not exist:
+- Return "Unable to verify - log file not found"
+- Do NOT throw errors
+- Do NOT attempt to read other files
+- Report: "Credibility: UNKNOWN"
+
+### Platform API
+
+Currently, OpenClaw does **not provide** a tool-call audit API or sanitized summary feed. Therefore, this skill must read the raw log file to function.
 
 ### What It Does NOT Do
 
