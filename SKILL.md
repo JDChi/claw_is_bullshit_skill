@@ -88,6 +88,20 @@ Analyze the response text for signs of good judgment:
 
 **Note**: This check is separate from the general "any tool" check. Even if AI called other tools (like web_search), if the response contains calculations, it should also call a calculation tool.
 
+### Time/Date Check
+
+**Trigger**: When AI's response contains specific time, date, or timezone information (e.g., "now is 07:26 UTC", "today is Thursday", "your time is 15:30")
+
+**Check**: Did AI call any time/date tools?
+
+| Tool Called | Result |
+|-------------|--------|
+| `date`, `exec` with date/time command | ✅ Verified |
+| Any time/calendar API | ✅ Verified |
+| None | ❌ Not verified → -2 points |
+
+**Note**: This catches hallucinations where AI makes up time/date without verification.
+
 ### Final Score
 
 | Score | Credibility |
