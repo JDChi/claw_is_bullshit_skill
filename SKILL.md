@@ -77,69 +77,85 @@ Add up points based on tool usage and response quality patterns.
 | Acknowledges uncertainty ("不确定", "可能", "I'm not sure") | +1 |
 | Makes up facts confidently (no tool + specific facts) | -2 |
 
-## Credibility Levels
+## Verdict per Round
 
-Based on final score:
+Each round gets its own verdict:
 
-| Score | Level | Emoji |
-|-------|-------|-------|
-| 3+ | ✅ HIGH | Looks good! |
-| 1-2 | ⚠️ MEDIUM | Eh, some doubts |
-| 0 or negative | ❌ LOW | Uh... I'm not sure |
+| Tool Used | Verdict |
+|-----------|----------|
+| Correct tool used | ✅ Looks good! |
+| No tool (but needed) | ❌ Might be wrong |
+| Uncertain answer | 🤔 Not sure |
 
 ## Output Format
 
 The fact check should be in the **same language** as the user's question.
 
+### Step-by-Step Analysis
+
+First, analyze each round of conversation:
+
+```
+Round N:
+- User asked: [question summary]
+- AI answered: [answer summary]
+- Tools called: [tool names or "none"]
+- Issues found: [any problems detected]
+- Score: +X / -X
+```
+
+### Output Rules by Conversation Length
+
+| Conversation Rounds | Output |
+|---------------------|--------|
+| ≤ 5 rounds | Show every round |
+| > 5 rounds | Show only last round |
+
+**Note:** Each round is evaluated independently. No overall summary needed - users can judge themselves.
+
 ### Style
 - Friendly and lively, not robotic
-- Casual tone (e.g., "Just checked it for you", "Uh...")
+- Casual tone
 - Keep it short and fun
-- No overly technical language
-
-### Credibility Expressions
-
-| Score | Emoji | Expression |
-|-------|-------|------------|
-| 3+ | ✅ | Looks good! |
-| 1-2 | 🤔 | Eh, some doubts |
-| 0 or negative | 😅 | Uh... I'm not sure |
+- Each round is independent - no overall summary
 
 ### Example Output
 
-**General:**
+**≤5 rounds (show all):**
 ```
 ---
-🤔 Just checked it for you:
+Fact Check:
 
-- Said "according to xx" but I can't find the source, minus points!
-- Didn't call any tools to verify, minus points!
+Round 1:
+- Q: current time
+- A: "2026-03-15 17:18 CST"
+- Tools: date command ✅
+- Verdict: ✅ Looks good!
 
-😅 Summary: I'm not sure about this, recommend double-checking
+Round 2:
+- Q: 15000 × 1.2% = ?
+- A: "15180"
+- Tools: none ❌
+- Verdict: ❌ No tool used for calculation
+
+Round 3:
+- Q: is it true
+- A: "算对了，15180"
+- Tools: python3 ✅
+- Verdict: ✅ Verified!
 ---
 ```
 
-**Math Calculation Example:**
+**>5 rounds (show last round only):**
 ```
 ---
-🤔 Let me check this for you:
+Fact Check (last round):
 
-- Your response contains math calculation (123 × 456), but didn't call any calculation tool to verify!
-- Suggestion: Verify it yourself
-
-😅 Caution: AI might calculate wrong
----
-```
-
-**Time/Date Example:**
-```
----
-🤔 Let me check this for you:
-
-- Your response contains specific time/date ("now is 15:30"), but didn't call any time tool to verify!
-- AI might hallucinate time without checking
-
-😅 Caution: Double-check the time
+Round 5:
+- Q: [question]
+- A: [answer]
+- Tools: [tool name] ✅/❌
+- Verdict: ✅/❌
 ---
 ```
 
