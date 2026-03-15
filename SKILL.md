@@ -49,7 +49,7 @@ Read the AI's response and identify what type of information it contains:
 - Uncertain statements
 
 ### Step 2: Check Tool Usage
-Look at what tools were called during the response. Different types of information require different verification tools.
+Look at what tools were called throughout the **entire conversation history** (not just the current response). Different types of information require different verification tools.
 
 ### Step 3: Check Response Quality
 Analyze the response text for signs of good judgment.
