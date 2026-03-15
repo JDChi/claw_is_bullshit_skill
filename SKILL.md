@@ -74,6 +74,20 @@ Analyze the response text for signs of good judgment:
 | Acknowledges uncertainty ("不确定", "可能") | +1 |
 | Makes up facts confidently | -2 |
 
+### Math Calculation Check
+
+**Trigger**: When AI's response contains mathematical expressions (numbers + operators like +, -, ×, *, ÷, /, %, ^, etc.)
+
+**Check**: Did AI call any calculation tools?
+
+| Tool Called | Result |
+|-------------|--------|
+| `exec` with calculation (Python, bc, etc.) | ✅ Verified |
+| Any calculator tool | ✅ Verified |
+| None | ❌ Not verified → -2 points |
+
+**Note**: This check is separate from the general "any tool" check. Even if AI called other tools (like web_search), if the response contains calculations, it should also call a calculation tool.
+
 ### Final Score
 
 | Score | Credibility |
@@ -98,6 +112,7 @@ The fact check should be friendly and lively, not robotic. Use casual language.
 
 ### Example Output
 
+**General:**
 ```
 ---
 🤔 Just checked it for you:
@@ -106,6 +121,18 @@ The fact check should be friendly and lively, not robotic. Use casual language.
 - Didn't call any tools to verify, minus points!
 
 😅 Summary: I'm not sure about this, recommend double-checking
+---
+```
+
+**Math Calculation Example:**
+```
+---
+🤔 让我来核查一下：
+
+- 回答中包含数学计算 (123 × 456)，但没有调用计算工具验算！
+- 建议：自己算一遍确认一下
+
+😅 小心：AI 可能会算错哦
 ---
 ```
 
