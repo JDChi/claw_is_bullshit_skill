@@ -109,7 +109,7 @@ Round N:
 | Conversation Rounds | Output |
 |---------------------|--------|
 | ≤ 5 rounds | Show every round |
-| > 5 rounds | Show only last round |
+| > 5 rounds | Show only suspicious rounds |
 
 **Note:** Each round is evaluated independently. No overall summary needed - users can judge themselves.
 
@@ -146,16 +146,24 @@ Round 3:
 ---
 ```
 
-**>5 rounds (show last round only):**
+**>5 rounds (show suspicious only):**
 ```
 ---
-Fact Check (last round):
+Fact Check:
 
-Round 5:
-- Q: [question]
-- A: [answer]
-- Tools: [tool name] ✅/❌
-- Verdict: ✅/❌
+⚠️ Suspicious rounds:
+
+Round 1:
+- Q: current time
+- A: "07:26 UTC" (wrong!)
+- Tools: none ❌
+- Verdict: ❌ No time tool used, gave wrong time
+
+Round 3:
+- Q: 15000 × 1.2%
+- A: "15180"
+- Tools: none ❌
+- Verdict: ❌ No calculation tool used
 ---
 ```
 
