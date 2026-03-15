@@ -127,12 +127,12 @@ The fact check should be friendly and lively, not robotic. Use casual language.
 **Math Calculation Example:**
 ```
 ---
-🤔 让我来核查一下：
+🤔 Let me check this for you:
 
-- 回答中包含数学计算 (123 × 456)，但没有调用计算工具验算！
-- 建议：自己算一遍确认一下
+- Your response contains math calculation (123 × 456), but didn't call any calculation tool to verify!
+- Suggestion: Verify it yourself
 
-😅 小心：AI 可能会算错哦
+😅 Caution: AI might calculate wrong
 ---
 ```
 
